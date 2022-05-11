@@ -1,0 +1,208 @@
+# Kotlin based Spring MVC project standard 
+
+Kotlin을 코드베이스로 하여 Spring 기반의 API 서비스를 개발 하면서 언어를 제대로 사용하고 있지 못하고 있다는 생각이 많이 들었다.   
+Spring에서 Kotlin 지원을 위한 다양한 DSL을 전혀 이용하지 못했고 Repository에서 null을 반환하는지 체크하여 예외를 던지는 코드를  
+매번 작성하는 등 확장함수를 적절히 사용하지 못했다.  
+
+Kotlin에서 제공하는 컨벤션에 따라 클래스 내에 선언 순서도 전혀 지키지 못했고 (companion object를 가장 상단에 선언 해버림)  
+require나 check와 같은 함수의 존재를 몰라 사용하거나 응용하지 못했다.  
+
+프로젝트의 모델 중 일부 상속 개념이 있었는데 Sealed 클래스가 떠오르지 않아 Abstract 클래스를 이용했고  
+when 구문에서 else 절을 두는 실수를 저질렀다. 나중에 새로운 자식 클래스가 추가 됐다면 예기치 못한 에러를 런타임에 만났을 수도 있다.  
+Sealed 클래스로 설계 했다면 else 절을 두지 않았더도 됐을것이고 컴파일 시점에 에러를 만날 수 있었을 것이다.   
+
+테스트에 있어서도 모든 Mocking을 any, anyLong 등으로 해버리는 바람에 올바른 파라미터가 넘어가는 지에 대한 테스트가 누락됐고 실제 버그도 발생했다.  
+그리고 테스트 코드를 작성하는 스타일도 BDDMockito를 활용하지 못했고 검증부에서도 Spring이 제공하는 DSL을 제대로 활용하지 못했다.  
+
+Spring Databind 부분에서도 조금 더 우아한 사용법을 찾아보았으면 좋았을 걸 하는 생각이 들었다.  
+예를들어 Enum 타입의 바인딩을 위해 각 필드마다 하나하나 Serialize를 붙여주는 노가다를 했다.  
+손도 많이가고 우아하지도 못했다.  
+```kotlin
+enum class SupportLang {
+    KO, EN, JA, ZH
+}
+
+class UserCreateRequest(
+    @field:JsonSerialize(using = SupportLangSerializer::class)
+    val language: SupportLang
+)
+```
+
+Kotlin과 JPA(Hibernate)를 같이 사용 하면서 너무 코드 작성의 편의만 챙긴것이 아닌가 싶은 부분도 있다.   
+예를들어 자바였다면 Entity에 대해 Setter를 선언하지 않도록 하여 외부에서 함부러 필드를 수정하지 못하게 했지만    
+동일한 효과를 위해 Kotlin에서 private set을 하나하나 선언해 주는것이 오히려 손이 더 많이간다고 생각했고 실제로 귀찮았다.  
+그래서 private set은 선언하지 않고 팀 내의 컨벤션으로 관리해서 코드리뷰 단계에서 필드를 외부에서 직접 수정하는 부분을 걸러내자라고 생각했다.  
+이 부분도 조금 더 개선할 여지가 있지 않나 싶다.  
+
+이런저런 내용등을 토대로 프로젝트 진행시 아쉬웠던 점을 회고하면서 앞으로의 표준을 가다듬어보려고 한다.
+
+## Kotlin  
+모든 코딩 컨벤션은 https://kotlinlang.org/docs/coding-conventions.html 링크를 따른다.  
+
+Effective Kotlin 책을 보면서 배운 내용을 아래 리파지토리에 정리하기로 한다.    
+https://github.com/dlxotn216/effective-kotlin  
+여기서는 이전 프로젝트 진행 시 아쉬웠던 점을 위주로 회고한다.  
+
+#### (1) 클래스 선언  
+https://kotlinlang.org/docs/coding-conventions.html#class-layout  
+클래스 선언 규칙에서 아래의 순서를 따른다.  
+1. Property declarations and initializer blocks
+2. Secondary constructors 
+3. Method declarations 
+4. Companion object  
+
+메서드의 순서는 알파벳 순서, 접근제어에 따른 순서, Override 여부에 따른 순서 등으로 절대 정렬하지 않는다.  
+위에서 아래의 흐름으로 메서드가 사용되는 순서를 적절히 따르면 충분하다.  
+중첩 클래스는 클래스에서 사용된다면 메서드의 뒤에 선언하고 외부에서 사용을 위한 것이라면 Companion Object 뒤에 선언한다.  
+
+#### (2) 가변성 제한과 불변성 
+Kotlin은 불변객체를 만들거나 프로퍼티 수정을 제한하는 것이 자바보다 더 잘 되어있다고 생각한다.  
+특히 Data 클래스는 copy 메서드를 통해 손쉽게 객체 복제를 가능하게 해준다.  
+
+아래와 같은 html 태그들을 PDF로 출력 할 때 재귀적으로 랜더링을 하도록 하면 손쉽게 해결 할 수 있다.  
+```html
+<p>
+    <b style="font-size: 10px">테<i style="font-size: 12px">스<u>트</u> 문</i>서</b>
+</p>
+```
+다만 부모 태그의 Font Size, Color, Font Family를 오염 없이 하위 컨텍스트로 전달 해줄까가 고민이었는데  
+Data클래스를 통해서 잘 해결할 수 있었다.  
+```kotlin
+fun getChildren(node: Node, renderingContext: me.taesu.kopringstandard.context.RenderingContext): List<Element> {
+    val resolvedContext = renderingContext.copy(
+        fontSize = resolveFont(node),
+        color = resolveColor(node),
+        fontStyles = resolveFontStyles(node, renderingContext)
+    )
+    
+    return if (node.childNodeSize() == 0) {
+        arrayListOf(nodeToPdfElements(node, resolvedContext))   // 재귀 호출이 일어나도 복제 된 resolvedContext가 전달 되므로 오염이 없다.
+    } else if ((node.childNodeSize() == 1 && node.childNode(0) is TextNode)) {
+        arrayListOf(nodeToPdfElements(node.childNode(0), resolvedContext))
+    } else {
+        node.childNodes().flatMap {
+            getAllElement(it, resolvedContext)
+        }
+    }
+}
+```
+
+Entity는 불변의 대상은 아니다. 그렇기에 가변성을 제한해주는 것이 좋다.  
+하지만 private set으로 선언 하는 것과 기본 값을 항상 넣어주어야 하는 점이 너무 불편해보였다.  
+
+아래 클래스의 경우 User 객체 생성 시 name에 대한 초기화를 빼먹을 수 있는 부분이 분명히 보인다.
+```kotlin
+@Table(name = "USR_USER")
+@Entity(name = "User")
+class User(
+    @Id
+    @GeneratedValue
+    @Column(name = "USER_KEY")
+    val userKey: Long,
+) {
+    @Column(name = "USER_NAME")
+    var name: String = ""
+        private set
+}
+```
+그래서 아래와 같이 생성자에 선언을 하고 private set으로 외부에서 직접적인 필드 수정을 강제적으로 막지는 않고 코드리뷰 선에서 막도록 컨벤션을 두었다.  
+```kotlin
+@Table(name = "USR_USER")
+@Entity(name = "User")
+class User(
+    @Id
+    @GeneratedValue
+    @Column(name = "USER_KEY")
+    val userKey: Long,
+    
+    @Column(name = "USER_NAME")
+    var name: String = "",
+    
+    @Column(name = "BIRTH_DATE")
+    var birthDate: LocalDate
+) {
+    fun update(name: String, birthDate: LocalDate) {
+        this.name = name
+        this.birthDate = birthDate
+    }
+}
+```
+하지만 프로젝트는 나 혼자하는 것도 아니고 언제까지나 내가 계속 코드리뷰를 하고 있을 수 없고 private set이 없다면  
+나중에 귀찮던 누군가 혹은 구조를 잘 모르는 누군가는 외부에서 필드를 직접 수정하는 코드를 짜고 코드리뷰도 통과해버려서  
+프로젝트가 잘못된 방향으로 흘러갈 수 있다는 생각이 들었다.  
+항상 나는 "API를 설계할 때 사용하는 사람이 실수를 덜 할 수 있는 방향으로 해야한다" 라는 원칙을 두고 구현을 하는데 클래스 설계에도 적용하는게 맞지 않나 싶다.  
+
+우아한 테크 세미나를 보던 중 화면에 나온 예제 코드를 참고 해봤다.  
+```kotlin
+@Table(name = "USR_USER")
+@Entity(name = "User")
+class User(
+    @Id
+    @GeneratedValue
+    @Column(name = "USER_KEY")
+    val userKey: Long,
+
+    @Embedded
+    private val userInfo: UserInfo
+) {
+    val name: String get() = userInfo.name
+    val birthDate: LocalDate get() = userInfo.birthDate
+
+    constructor(userKey: Long = 0, name: String, birthDate: LocalDate):
+        this(userKey, userInfo = UserInfo(name, birthDate))
+
+    fun update(name: String, birthDate: LocalDate) {
+        this.userInfo.update(name, birthDate)
+    }
+}
+
+@Embeddable
+class UserInfo(
+    @Column(name = "USER_NAME")
+    var name: String,
+
+    @Column(name = "BIRTH_DATE")
+    var birthDate: LocalDate,
+): Serializable {
+    fun update(name: String, birthDate: LocalDate) {
+        this.name = name
+        this.birthDate = birthDate
+    }
+}
+```
+UserInfo라는 Embeddable 클래스를 두어서 Entity의 생성자로 받게 하는 법이다.  
+userInfo는 private 필드로 선언해서 외부에서 직접적으로 접근하여 필드 수정을 방지하고  
+필드에 대한 수정은 Entity의 메서드가 받아서 Embedded 객체에 위임 하면 된다.  
+
+외부에서 보이는 필드는 모두 getter 뿐이다.  
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+## Testing
+TBD
+```kotlin
+  // given
+  doReturn(UserRetrieveResponse()).`when`.(service).retrieve(anyLong())
+  
+  // when
+  val mvcRequest = MockMvcRequestBuilders.get("/api/v3/studies/1/users/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+
+  // then ...
+```
+이 테스트는 아래의 컨트롤러가 제대로 파라미터를 넘기는지 전혀 검증 못한다.  
+```kotlin
+class UserRetrieveController(private val userRetrieveService: UserRetrieveService) {
+    @GetMapping("/api/v1/studies/{studyKey}/users/{userKey}")
+    fun retrieve(
+        @PathVariable("studyKey") studyKey: Long,
+        @PathVariable("userKey") userKey: Long,
+    ) {
+        userRetrieveService.retrieve(studyKey) // 잘못된 파라미터를 넘기고 있음
+        // ...
+    }
+}
+```
+
