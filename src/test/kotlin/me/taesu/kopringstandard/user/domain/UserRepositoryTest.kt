@@ -1,16 +1,8 @@
 package me.taesu.kopringstandard.user.domain
 
-import me.taesu.kopringstandard.user.domain.User
-import me.taesu.kopringstandard.user.domain.UserRepository
-import me.taesu.kopringstandard.user.domain.findByUserKeyOrThrow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.BDDMockito.given
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Spy
-import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson
@@ -41,7 +33,7 @@ internal class UserRepositoryTest {
         val user = userRepository.save(User(name = "lee", birthDate = LocalDate.of(1993, 2, 16)))
 
         // when
-        val findBy = userRepository.findByUserKeyOrThrow(user.userKey)
+        val findBy = userRepository.findByKeyOrThrow(user.key)
 
         // then
         assertThat(findBy.name).isEqualTo("lee")

@@ -1,6 +1,7 @@
 package me.taesu.kopringstandard.user.domain
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.NoRepositoryBean
 import java.io.Serializable
 import java.time.LocalDate
 import javax.persistence.*
@@ -18,7 +19,7 @@ class User(
     @Id
     @GeneratedValue
     @Column(name = "USER_KEY")
-    val userKey: Long,
+    val key: Long,
 
     @Embedded
     private val userInfo: UserInfo
@@ -48,10 +49,13 @@ class UserInfo(
     }
 }
 
-interface UserRepository: CrudRepository<User, Long> {
-    fun findByUserKey(userKey: Long): User?
+@NoRepositoryBean
+interface KeyBasedRepository<T, Long>: JpaRepository<T, Long> {
+    fun findByKey(key: Long): T?
 }
 
-fun UserRepository.findByUserKeyOrThrow(userKey: Long): User {
-    return findByUserKey(userKey) ?: throw NoSuchElementException("User[$userKey]")
+fun <T> KeyBasedRepository<T, Long>.findByKeyOrThrow(key: Long): T {
+    return findByKey(key) ?: throw NoSuchElementException("Entity[$key]")
 }
+
+interface UserRepository: KeyBasedRepository<User, Long>

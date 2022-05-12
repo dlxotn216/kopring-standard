@@ -132,7 +132,8 @@ class User(
 프로젝트가 잘못된 방향으로 흘러갈 수 있다는 생각이 들었다.  
 항상 나는 "API를 설계할 때 사용하는 사람이 실수를 덜 할 수 있는 방향으로 해야한다" 라는 원칙을 두고 구현을 하는데 클래스 설계에도 적용하는게 맞지 않나 싶다.  
 
-우아한 테크 세미나를 보던 중 화면에 나온 예제 코드를 참고 해봤다.  
+우아한 테크 세미나를 보던 중 화면에 나온 예제 코드를 참고 해봤다.
+
 ```kotlin
 @Table(name = "USR_USER")
 @Entity(name = "User")
@@ -140,7 +141,7 @@ class User(
     @Id
     @GeneratedValue
     @Column(name = "USER_KEY")
-    val userKey: Long,
+    val key: Long,
 
     @Embedded
     private val userInfo: UserInfo
@@ -178,6 +179,43 @@ userInfo는 private 필드로 선언해서 외부에서 직접적으로 접근�
 ![img.png](img.png)
 
 ![img_1.png](img_1.png)
+
+#### (3) 확장함수 활용
+아래와 같이 key로 Entity를 찾는 메서드 호출시 매번 elvis 연산자를 통해 예외를 던지는 코드를 짰다.
+```kotlin
+interface UserRepository: CrudRepository<User, Long> {
+    fun findByUserKey(userKey: Long): User?
+}
+
+class SomeService(private val userRepository: UserRepository)
+    fun someMethod(userKey: Long) {
+        val user = userRepository.findByUserKey(userKey) ?: throw NoSuchElementException("User[$userKey]")
+}
+```
+이보단 아래와 같은 확장함수를 만들어 썼으면 더 좋았을 것 같다.
+```kotlin
+interface UserRepository: CrudRepository<User, Long> {
+    fun findByUserKey(userKey: Long): User?
+}
+fun UserRepository.findByKeyOrThrow(userKey: Long): User {
+    return findByUserKey(userKey) ?: throw NoSuchElementException("User[$userKey]")
+}
+```
+
+아래와 같이 공통 Repository를 만들고 확장함수를 정의 해두면 더 좋을 듯.  
+(다만 userKey에서 key로 공통화를 위해 프로퍼티 이름이 바뀌어야 한다.)
+```kotlin
+@NoRepositoryBean
+interface KeyBasedRepository<T, Long>: JpaRepository<T, Long> {
+    fun findByKey(key: Long): T?
+}
+
+fun <T> KeyBasedRepository<T, Long>.findByKeyOrThrow(key: Long): T {
+    return findByKey(key) ?: throw NoSuchElementException("Entity[$key]")
+}
+
+interface UserRepository: KeyBasedRepository<User, Long>
+```
 
 ## Testing
 TBD

@@ -2,7 +2,6 @@ package me.taesu.kopringstandard.user.application
 
 import me.taesu.kopringstandard.user.domain.User
 import me.taesu.kopringstandard.user.domain.UserRepository
-import me.taesu.kopringstandard.user.domain.findByUserKeyOrThrow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -34,7 +33,7 @@ internal class UserUpdateServiceTest {
     fun `Should success to update`() {
         // given
         val user = User(userKey = 12L, name = "lee", birthDate = LocalDate.of(1993, 2, 16))
-        given(userRepository.findByUserKey(12L)).willReturn(user)
+        given(userRepository.findByKey(12L)).willReturn(user)
 
         // when
         userUpdateService.update(12L, UserUpdateRequest("changed", LocalDate.of(1993, 2, 11)))

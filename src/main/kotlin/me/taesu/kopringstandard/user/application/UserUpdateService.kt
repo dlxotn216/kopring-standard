@@ -1,7 +1,7 @@
 package me.taesu.kopringstandard.user.application
 
 import me.taesu.kopringstandard.user.domain.UserRepository
-import me.taesu.kopringstandard.user.domain.findByUserKeyOrThrow
+import me.taesu.kopringstandard.user.domain.findByKeyOrThrow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -17,7 +17,7 @@ import java.time.LocalDate
 class UserUpdateService(private val userRepository: UserRepository) {
     @Transactional
     fun update(userKey: Long, request: UserUpdateRequest) {
-        val user = userRepository.findByUserKeyOrThrow(userKey)
+        val user = userRepository.findByKeyOrThrow(userKey)
         with(request) {
             user.update(name = name, birthDate = birthDate)
         }
