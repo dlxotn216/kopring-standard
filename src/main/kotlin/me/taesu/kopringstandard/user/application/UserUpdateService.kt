@@ -1,5 +1,7 @@
 package me.taesu.kopringstandard.user.application
 
+import me.taesu.kopringstandard.app.exception.UserEmailDuplicatedException
+import me.taesu.kopringstandard.app.exception.validate
 import me.taesu.kopringstandard.user.domain.UserRepository
 import me.taesu.kopringstandard.user.domain.findByKeyOrThrow
 import org.springframework.stereotype.Service
@@ -18,13 +20,18 @@ class UserUpdateService(private val userRepository: UserRepository) {
     @Transactional
     fun update(userKey: Long, request: UserUpdateRequest) {
         val user = userRepository.findByKeyOrThrow(userKey)
+        val existsByEmail = userRepository.existsByEmail(request.email)
+        validate(!(user.email != request.email && existsByEmail)) {
+            UserEmailDuplicatedException(request.email)
+        }
         with(request) {
-            user.update(name = name, birthDate = birthDate)
+            user.update(email = email, name = name, birthDate = birthDate)
         }
     }
 }
 
 class UserUpdateRequest(
+    val email: String,
     val name: String,
-    var birthDate: LocalDate,
+    val birthDate: LocalDate,
 )

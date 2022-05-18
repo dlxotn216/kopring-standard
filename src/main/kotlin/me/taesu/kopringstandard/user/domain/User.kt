@@ -24,26 +24,31 @@ class User(
     @Embedded
     private val userInfo: UserInfo
 ) {
+    val email: String get() = userInfo.email
     val name: String get() = userInfo.name
     val birthDate: LocalDate get() = userInfo.birthDate
 
-    constructor(userKey: Long = 0, name: String, birthDate: LocalDate):
-        this(userKey, userInfo = UserInfo(name, birthDate))
+    constructor(key: Long = 0, email: String, name: String, birthDate: LocalDate):
+        this(key, userInfo = UserInfo(email = email, name = name, birthDate = birthDate))
 
-    fun update(name: String, birthDate: LocalDate) {
-        this.userInfo.update(name, birthDate)
+    fun update(email: String, name: String, birthDate: LocalDate) {
+        this.userInfo.update(email, name, birthDate)
     }
 }
 
 @Embeddable
 class UserInfo(
+    @Column(name = "EMAIL", unique = true)
+    var email: String,
+
     @Column(name = "USER_NAME")
     var name: String,
 
     @Column(name = "BIRTH_DATE")
     var birthDate: LocalDate,
 ): Serializable {
-    fun update(name: String, birthDate: LocalDate) {
+    fun update(email: String, name: String, birthDate: LocalDate) {
+        this.email = email
         this.name = name
         this.birthDate = birthDate
     }
@@ -58,4 +63,7 @@ fun <T> KeyBasedRepository<T, Long>.findByKeyOrThrow(key: Long): T {
     return findByKey(key) ?: throw NoSuchElementException("Entity[$key]")
 }
 
-interface UserRepository: KeyBasedRepository<User, Long>
+interface UserRepository: KeyBasedRepository<User, Long> {
+    fun findByEmail(email: String): User?
+    fun existsByEmail(email: String): Boolean
+}

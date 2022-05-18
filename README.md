@@ -218,7 +218,46 @@ interface UserRepository: KeyBasedRepository<User, Long>
 ```
 
 ## Testing
-TBD
+#### (1) BDDMockito 사용 (UserExceptionServiceTest.kt)  
+이전 프로젝트에서 잘 사용 했는데 신규 프로젝트에선 제대로 사용하지 못했다.  
+이번 기회에 Mockito와 BDDMockito의 차이점을 정리해보려고 한다.  
+
+Mockito Style
+```kotlin
+  // given
+  doReturn(user).`when`(userRepository).findByKey(12L)
+  `when`(userRepository.findByKey(12L)).thenReturn(user)
+```
+doReturn().when()과 when().thenReturn의 차이점은 타입 검증에 있다.  
+```kotlin
+doReturn(123).`when`(userRepository).findByKey(12L)
+```
+doReturn은 위처럼 해도 컴파일 시점에 시점에 오류가 안난다.  
+실제 테스트를 돌렸을 때 런타임에 오류가 난다. 그래서 Mockito를 사용할거라면 when().thenReturn()을 쓰는게 더 좋다고 생각한다.  
+
+단, when().thenReturn()은 실제 메서드 호출이 일어난다는 점을 주의해야 한다.
+doReturn().when()은 메서드 호출이 일어나지 않는다.  
+void 리턴 타입에 대해선 doNothing().when()을 사용하면 된다.
+
+BDDMockito Style
+```kotlin
+  // given
+  given(userRepository.findByKey(12L)).willReturn(user)
+  willDoNothing().given(service.update())
+```
+둘다 동작은 동일하지만 BDDMockito를 사용하는 편이 더 좋다고 생각한다.  
+willReturn에서 타입이 지정되어있어 컴파일 시점에 타입 오류를 미리 알 수 있어 좋다.  
+
+내부적으로 Mockito.when을 호출하므로 when().thenReturn()과 마찬가지로 실제 메서드 호출이 일어난다.  
+그렇기에 실제 동작과 다른 given 조건을 설정할 일도 줄어들것이라고 생각한다.  
+![img_3.png](img_3.png) 
+
+
+서술하는 흐름도 given ~ will return 이런식으로 흘러가니 given-when-then에 좀 더 부합하는 것 같아 좋다.  
+되도록 BDDMockito Style로 통일하되 필요시에만 Mockito 스타일을 따르면 될 것 같다.   
+
+
+#### (2) 파라미터에 대한 검증 
 ```kotlin
   // given
   doReturn(UserRetrieveResponse()).`when`.(service).retrieve(anyLong())
@@ -244,3 +283,46 @@ class UserRetrieveController(private val userRetrieveService: UserRetrieveServic
 }
 ```
 
+그래서 이런식으로 stub을 채우는게 더 바람직하다고 생각한다.
+```kotlin
+ // 실제 넘어가리라 예상하는 파라미터를 넣는다.  
+ // 다른 값이 서비스에 전달되면 null이 리턴 되어 테스트가 제대로 동작하지 않는다.  
+ given(userRetrieveService.retrieve(12L)).willReturn(
+    UserRetrieveResponse(
+        key = 12L,
+        email = "taesu@crscube.co.kr",
+        name = "Lee",
+        birthDate = LocalDate.of(1993, 2, 16)
+    )
+)
+```
+
+단 any와 혼용해야 할 경우 eq()로 파라미터 stub을 넣으면 된다.  
+eq로 감싸지 않으면 에러난다.  
+```kotlin
+given(userRetrieveService.retrieve(eq((12L)), anyString())).willReturn(
+            UserRetrieveResponse(
+                key = 12L,
+                email = "taesu@crscube.co.kr",
+                name = "Lee",
+                birthDate = LocalDate.of(1993, 2, 16)
+            )
+        )
+```
+
+eq로만 stub을 채우면 어떨까?  
+-> 마찬가지로 예외가 발생한다. 
+```kotlin
+given(
+    userRetrieveService.retrieve(
+        ArgumentMatchers.eq(12L),
+        ArgumentMatchers.eq("taesu@crscube.co.kr")
+    )
+).willReturn(
+    UserRetrieveResponse(
+        key = 12L,
+        email = "taesu@crscube.co.kr",
+        name = "Lee",
+        birthDate = LocalDate.of(1993, 2, 16)
+    )
+```

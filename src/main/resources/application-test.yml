@@ -19,7 +19,6 @@ spring:
       hibernate.order_inserts: true
       hibernate.order_updates: true
       hibernate.query.in_clause_parameter_padding: true
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 debug: true
 
