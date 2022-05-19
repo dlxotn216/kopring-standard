@@ -243,7 +243,7 @@ BDDMockito Style
 ```kotlin
   // given
   given(userRepository.findByKey(12L)).willReturn(user)
-  willDoNothing().given(service.update())
+  willDoNothing().given(service).update()
 ```
 둘다 동작은 동일하지만 BDDMockito를 사용하는 편이 더 좋다고 생각한다.  
 willReturn에서 타입이 지정되어있어 컴파일 시점에 타입 오류를 미리 알 수 있어 좋다.  
