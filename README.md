@@ -356,6 +356,7 @@ given(
         name = "Lee",
         birthDate = LocalDate.of(1993, 2, 16)
     )
+)
 ```
 
 ## Spring 전반
