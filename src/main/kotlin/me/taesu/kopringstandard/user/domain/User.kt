@@ -28,8 +28,22 @@ class User(
     val name: String get() = userInfo.name
     val birthDate: LocalDate get() = userInfo.birthDate
 
-    constructor(key: Long = 0, email: String, name: String, birthDate: LocalDate):
-        this(key, userInfo = UserInfo(email = email, name = name, birthDate = birthDate))
+    constructor(
+        key: Long = 0,
+        email: String,
+        name: String,
+        birthDate: LocalDate,
+        type: UserType,
+    ):
+        this(
+            key = key,
+            userInfo = UserInfo(
+                email = email,
+                name = name,
+                birthDate = birthDate,
+                type = type
+            )
+        )
 
     fun update(email: String, name: String, birthDate: LocalDate) {
         this.userInfo.update(email, name, birthDate)
@@ -46,6 +60,9 @@ class UserInfo(
 
     @Column(name = "BIRTH_DATE")
     var birthDate: LocalDate,
+
+    @Enumerated(EnumType.STRING)
+    var type: UserType,
 ): Serializable {
     fun update(email: String, name: String, birthDate: LocalDate) {
         this.email = email

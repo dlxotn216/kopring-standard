@@ -30,7 +30,14 @@ internal class UserRepositoryTest {
     @Test
     fun `Should success to retrieve`() {
         // given
-        val user = userRepository.save(User(email = "taesu@crscube.co.kr", name = "lee", birthDate = LocalDate.of(1993, 2, 16)))
+        val user = userRepository.save(
+            User(
+                email = "taesu@crscube.co.kr",
+                name = "lee",
+                birthDate = LocalDate.of(1993, 2, 16),
+                type = UserType.BRONZE
+            )
+        )
 
         // when
         val findBy = userRepository.findByKeyOrThrow(user.key)

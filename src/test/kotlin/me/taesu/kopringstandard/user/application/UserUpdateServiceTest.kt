@@ -2,6 +2,7 @@ package me.taesu.kopringstandard.user.application
 
 import me.taesu.kopringstandard.user.domain.User
 import me.taesu.kopringstandard.user.domain.UserRepository
+import me.taesu.kopringstandard.user.domain.UserType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -37,7 +38,13 @@ internal class UserUpdateServiceTest {
     fun `Should success to update`() {
         // given
         val user =
-            User(key = 12L, email = "taesu@crscube.co.kr", name = "lee", birthDate = LocalDate.of(1993, 2, 16))
+            User(
+                key = 12L,
+                email = "taesu@crscube.co.kr",
+                name = "lee",
+                birthDate = LocalDate.of(1993, 2, 16),
+                type = UserType.BRONZE
+            )
         given(userRepository.existsByEmail("taesu@crscube.co.kr")).willReturn(false)
         given(userRepository.findByKey(12L)).willReturn(user)
 
