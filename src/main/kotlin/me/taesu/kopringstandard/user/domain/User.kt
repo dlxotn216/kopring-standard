@@ -27,6 +27,7 @@ class User(
     val email: String get() = userInfo.email
     val name: String get() = userInfo.name
     val birthDate: LocalDate get() = userInfo.birthDate
+    val type: UserType get() = userInfo.type
 
     constructor(
         key: Long = 0,
