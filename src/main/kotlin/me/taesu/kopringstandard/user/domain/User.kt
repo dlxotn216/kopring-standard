@@ -82,6 +82,5 @@ fun <T> KeyBasedRepository<T, Long>.findByKeyOrThrow(key: Long): T {
 }
 
 interface UserRepository: KeyBasedRepository<User, Long> {
-    fun findByEmail(email: String): User?
-    fun existsByEmail(email: String): Boolean
+    fun existsByUserInfoEmail(email: String): Boolean
 }

@@ -20,8 +20,8 @@ class UserUpdateService(private val userRepository: UserRepository) {
     @Transactional
     fun update(userKey: Long, request: UserUpdateRequest) {
         val user = userRepository.findByKeyOrThrow(userKey)
-        val existsByEmail = userRepository.existsByEmail(request.email)
-        validate(!(user.email != request.email && existsByEmail)) {
+        val existsByUserInfoEmail = userRepository.existsByUserInfoEmail(request.email)
+        validate(!(user.email != request.email && existsByUserInfoEmail)) {
             UserEmailDuplicatedException(request.email)
         }
         with(request) {
