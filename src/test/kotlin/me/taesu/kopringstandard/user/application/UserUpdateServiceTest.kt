@@ -45,7 +45,7 @@ internal class UserUpdateServiceTest {
                 birthDate = LocalDate.of(1993, 2, 16),
                 type = UserType.BRONZE
             )
-        given(userRepository.existsByEmail("taesu@crscube.co.kr")).willReturn(false)
+        given(userRepository.existsByUserInfoEmail("taesu@crscube.co.kr")).willReturn(false)
         given(userRepository.findByKey(12L)).willReturn(user)
 
         doReturn(123).`when`(userRepository).findByKey(12L)
