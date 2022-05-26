@@ -48,6 +48,13 @@ internal class UserPaginationControllerTest {
                         name = "Lee Tae Su",
                         birthDate = LocalDate.of(1993, 2, 16),
                         userType = UserType.DIAMOND
+                    ),
+                    UserPaginatedRow(
+                        userKey = 23411L,
+                        email = "taesu1ef@crscube.co.kr",
+                        name = "Park Tae Su",
+                        birthDate = LocalDate.of(1993, 2, 16),
+                        userType = null
                     )
                 )
             )
@@ -69,6 +76,9 @@ internal class UserPaginationControllerTest {
             jsonPath("$.content[0].birthDate") { value("1993-02-16") }
             jsonPath("$.content[0].userType.value") { value("DIAMOND") }
             jsonPath("$.content[0].userType.label") { value("다이아몬드") }
+
+            jsonPath("$.content[1].userType.value") { value("") }
+            jsonPath("$.content[1].userType.label") { value("") }
         }.andDo {
             print()
         }

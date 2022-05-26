@@ -35,6 +35,6 @@ class UserPaginatedRow(
     val email: String,
     val name: String,
     val birthDate: LocalDate,
-    val userType: UserType
+    val userType: UserType?
 )
 

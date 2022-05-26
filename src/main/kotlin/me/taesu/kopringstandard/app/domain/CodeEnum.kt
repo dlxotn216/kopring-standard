@@ -10,7 +10,10 @@ import me.taesu.kopringstandard.app.interfaces.CodeEnumSerializer
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
-@JsonSerialize(using = CodeEnumSerializer::class)
+@JsonSerialize(
+    using = CodeEnumSerializer::class,
+    nullsUsing = CodeEnumSerializer::class
+)
 interface CodeEnum {
     val codeId: String
     val name: String
