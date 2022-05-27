@@ -361,7 +361,7 @@ given(
 
 ## Spring 전반
 
-#### Code값 처리
+#### (1) Code값 처리
 
 리스트를 응답으로 내보내거나 하면 코드값과 다국어화 된 라벨을 내려줘야 하는 경우가 많다.  
 이번 프로젝트에서 Code 데이터를 DB화 하지 않고 Application 내부에서 갖게 했고 다국어는 Message Properties를 이용했다.  
@@ -394,7 +394,6 @@ class CodeEnumSerializer(private val messageSource: MessageSource): JsonSerializ
 
 아래의 UserType Enum은 사용 예제이다.  
 코드 값은 enum의 name을 사용한다고 가정하고 codeId는 Kotlin의 Default Argument를 이용한다.
-
 ```kotlin
 enum class UserType(override val codeId: String = "USER_TYPE"): CodeEnum {
     BRONZE,
@@ -416,7 +415,6 @@ class UserPaginatedRow(
 
 UserType Enum이 실제 Serialize 된 결관느 아래와 같다.  
 코드값 처리에 대해 별도 로직 필요 없이 Message Properties에 규칙에 따른 프로퍼티만 존재하면 알아서 다국어가 번역 되니 편리할 것 같다.
-
 ```json
 {
   "content": [
@@ -447,3 +445,100 @@ UserType Enum이 실제 Serialize 된 결관느 아래와 같다.
   "empty": false
 }
 ```
+
+(2) Null Code값 처리 만약 enum 필드가 null일 때는 아래와 같이 응답이 나간다.
+
+```json
+{
+  "userKey": 1,
+  "email": "taesu@crscube.co.kr",
+  "name": "Lee Tae Su",
+  "birthDate": "1993-02-16",
+  "userType": null
+}
+```
+
+CodeEnumSerializer가 사용된다면 null 대신 빈 객체로 응답이 나가야 하지만 그렇지 않다.  
+왜 그런지 디버깅을 해보면 아래의 com.fasterxml.jackson.databind.BeanPropertyWriter#serializeAsField 메서드를 보면 알 수 있다.     
+![img_4.png](img_4.png)
+
+일단 값이 null이고 _nullSerializer가 존재하면 Serialize 처리를 위임한다.  
+_nullSerializer를 설정해주기 위해 아래와 같이 nullUsing 속성을 지정하면 될 듯 하지만  
+인터페이스, 클래스 수준에 적용한 nullUsing은 원하는대로 동작하지 않는다.
+
+```kotlin
+@JsonSerialize(using = CodeEnumSerializer::class, nullUsing = CodeEnumSerializer::class)
+interface CodeEnum {
+    val codeId: String
+    val name: String
+    val messageId: String get() = "CODE.$codeId.$name"
+}
+```
+
+아래와 같이 필드 수준에 적용해야 제대로 동작 한다.
+
+```kotlin
+class UserPaginatedRow(
+    val userKey: Long,
+    val email: String,
+    val name: String,
+    val birthDate: LocalDate,
+    @JsonSerialize(using = CodeEnumSerializer::class, nullUsing = CodeEnumSerializer::class)
+    val userType: UserType
+)
+```
+
+아마도 인터페이스, 클래스 레벨의 NullSerializer < 아래 캡쳐의 base의 NullSerializer < 필드 레벨의 NullSerializer의 우선순위를 갖기 때문인 것 같다.  
+![img_5.png](img_5.png)
+
+모든 필드에 적용하는 경우 누락되는 케이스가 발생할일이 많으므로 최대한 인터페이스, 클래스 수준에 적용하는 것이 좋을 것이다.  
+그러기 위해서 설정으로 풀기보다는 아래와 같이 assignNullSerializer를 우리가 원하는 타이밍에 호출 해주는 것이 가장 확실한 방법일 것 같았다.     
+![img_6.png](img_6.png)
+
+https://tousu.in/qa/?qa=1033058 글을 통해서 Jackson 모듈 설정을 통해서 원하는 설정을 추가하는 방법을 참고 했다.
+
+```kotlin
+@Configuration
+class AppConfig: WebMvcConfigurer {
+    @Bean
+    fun codeEnumModule() = CodeEnumModule()
+}
+class CodeEnumModule: Module() {
+    override fun version(): Version = Version.unknownVersion()
+    override fun getModuleName() = "CodeEnum"
+    override fun setupModule(context: SetupContext) {
+        context.addBeanSerializerModifier(CustomBeanSerializerModifier())
+    }
+}
+class CustomBeanSerializerModifier: BeanSerializerModifier() {
+    override fun changeProperties(
+        config: SerializationConfig,
+        beanDesc: BeanDescription, beanProperties: List<BeanPropertyWriter>
+    ): List<BeanPropertyWriter> {
+        val codeEnumNullSerializer = CodeEnumNullSerializer()
+        return beanProperties.apply {
+            filter { CodeEnum::class.java.isAssignableFrom(it.type.rawClass) }
+                .forEach { it.assignNullSerializer(codeEnumNullSerializer) }
+        }
+    }
+}
+```
+
+##### 참고
+
+(1) Jackson의 Module 추상 클래스를 구현하는 CodeEnumModule을 Bean으로 선언해주면 Jackson에서 ObjectMapper를 설정하면서 모듈을 알아서 등록 함  
+(2) CustomBeanSerializerModifier는 객체가 Serializer될 때 호출이 되어 원하는 시점에 CodeEnumNullSerializer를 Assign 할 수 있음    
+(3) CodeEnum 인터페이스의 하위 Enum 클래스인 경우 모두 CodeEnumNullSerializer를 Assign 해줘야 하므로 isAssignableFrom 메서드를 사용  
+(4) CodeEnumModule Bean은 WebMvcConfigurer를 상속하는 Configuration 클래스에 등록 해주어야 함.
+
+```kotlin
+@Configuration
+class JacksonConfig {
+    @Bean
+    fun codeEnumModule() = CodeEnumModule()
+}
+```
+
+Jackson2ObjectMapperBuilder는 WebMvcConfigurer 설정에서 실행되어 모듈들을 찾아 등록하기 때문에  
+위와같이 별도의 일반 Configuration 클래스에 Bean을 등록하면 모듈이 알아서 등록되지 않음.  
+  
