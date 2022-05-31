@@ -1,0 +1,36 @@
+:doctype: article
+
+**Request Header**
+[cols="20,20,50,10"]
+
+|===
+| 헤더 | 값 예시 | 설명 | 필수여부
+
+| Authorization
+| Bearer Token
+| 사용자 인증 토큰
+| 필수
+
+| Content-Type
+| application/json
+| Request body 요청 포맷
+| 필수
+
+| Accept
+| application/json
+| Response body 요청 포맷
+| 필수
+
+| Accept-Language
+| en, ko, ja, zh
+| 응답 메시지 다국어 값
+| 필수
+
+| X-USER-ZONEID
+| Asia/Seoul, UTC
+| 현재 접속한 Team의 타임존 (Study 레벨은 Organization의 타임존)
+
+보내지 않을경우 (Asia/Seoul)가 기본
+
+| 필수
+|===

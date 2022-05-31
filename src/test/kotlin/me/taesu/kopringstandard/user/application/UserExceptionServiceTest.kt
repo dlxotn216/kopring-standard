@@ -3,6 +3,7 @@ package me.taesu.kopringstandard.user.application
 import me.taesu.kopringstandard.app.exception.UserEmailDuplicatedException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
@@ -19,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
+@EnabledIfSystemProperty(named = "testMode", matches = "unitTest")
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension::class)
 internal class UserExceptionServiceTest {

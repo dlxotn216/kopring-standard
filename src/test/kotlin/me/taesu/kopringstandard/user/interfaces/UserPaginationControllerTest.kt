@@ -4,6 +4,7 @@ import me.taesu.kopringstandard.user.application.UserPaginationService
 import me.taesu.kopringstandard.user.application.any
 import me.taesu.kopringstandard.user.domain.UserType
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ import java.time.LocalDate
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
+@EnabledIfSystemProperty(named = "testMode", matches = "unitTest")
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(

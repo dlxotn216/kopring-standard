@@ -18,4 +18,5 @@ interface CodeEnum {
     val codeId: String
     val name: String
     val messageId: String get() = "CODE.$codeId.$name"
+    val description: String
 }

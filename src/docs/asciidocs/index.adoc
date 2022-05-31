@@ -1,0 +1,15 @@
+= RESTful Notes API Guide
+Lee Tae Su;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:sectlinks:
+:table-stripes: none
+:docinfo: shared-head
+
+== Common
+
+include::api-guide.adoc[]
+include::api-guide2.adoc[]

@@ -1,0 +1,66 @@
+[[Api-Admin2]]
+=== 01. Consent API V3 - Admin
+
+==== 01.01. CON-AP.ADMIN.Auth
+
+===== 01.01.01. CON-AP.ADMIN.Auth.UserAuth
+
+**Overview**
+
+include::{snippets}/Retrieve User/path-parameters.adoc[]
+include::{snippets}/Retrieve User/http-request.adoc[]
+include::base-guide.adoc[]
+
+**2xx Successful Response**
+
+include::{snippets}/Retrieve User/http-response.adoc[]
+include::{snippets}/Retrieve User/response-fields.adoc[]
+
+**4xx Client Error**
+
+include::{snippets}/Retrieve User Failure/http-response.adoc[]
+include::{snippets}/Retrieve User Failure/response-fields.adoc[]
+
+**에러코드**
+[cols="30, 70"]
+
+|===
+| 에러코드 | 설명
+
+| RESOURCE_NOT_FOUND
+| 리소스가 존재하지 않을 때.
+| INVALID_REQUEST
+| 요청이 잘못 됐을 때.
+|===
+
+<<<
+
+===== 01.01.02. CON-AP.ADMIN.Auth.UserAuth
+
+**Overview**
+
+include::{snippets}/Retrieve User/path-parameters.adoc[]
+include::{snippets}/Retrieve User/http-request.adoc[]
+include::base-guide.adoc[]
+
+**2xx Successful Response**
+
+include::{snippets}/Retrieve User/http-response.adoc[]
+include::{snippets}/Retrieve User/response-fields.adoc[]
+
+**4xx Client Error**
+
+include::{snippets}/Retrieve User Failure/http-response.adoc[]
+include::{snippets}/Retrieve User Failure/response-fields.adoc[]
+
+**에러코드**
+[cols="30, 70"]
+
+|===
+| 에러코드 | 설명
+
+| RESOURCE_NOT_FOUND
+| 리소스가 존재하지 않을 때.
+| INVALID_REQUEST
+| 요청이 잘못 됐을 때.
+|===

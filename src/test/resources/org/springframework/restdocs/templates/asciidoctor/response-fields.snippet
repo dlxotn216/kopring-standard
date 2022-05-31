@@ -1,0 +1,13 @@
+[cols="30, 10, 30, 10, 20"]
+    |===
+    |경로|타입|설명|Null|형식
+
+{{#fields}}
+    |{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
+    |{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
+    |{{#tableCellContent}}{{description}}{{/tableCellContent}}
+    |{{#tableCellContent}}{{#nullable}}{{nullable}}{{/nullable}}{{/tableCellContent}}
+    |{{#tableCellContent}}{{#format}}{{format}}{{/format}}{{/tableCellContent}}
+
+{{/fields}}
+    |===

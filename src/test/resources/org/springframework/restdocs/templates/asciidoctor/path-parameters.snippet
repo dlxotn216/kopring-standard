@@ -1,0 +1,12 @@
+
+    +{{path}} +
+        [cols="30,20,50"]
+        |===
+        |파라미터|타입|설명
+
+    {{#parameters}}
+        |{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
+        |{{#tableCellContent}}{{#type}}{{type}}{{/type}}{{/tableCellContent}}
+        |{{#tableCellContent}}{{description}}{{/tableCellContent}}
+    {{/parameters}}
+        |===

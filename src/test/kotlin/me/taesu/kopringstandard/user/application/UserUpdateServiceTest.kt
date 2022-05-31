@@ -5,13 +5,12 @@ import me.taesu.kopringstandard.user.domain.UserRepository
 import me.taesu.kopringstandard.user.domain.UserType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.doReturn
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.test.context.ActiveProfiles
@@ -24,6 +23,7 @@ import java.time.LocalDate
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
+@EnabledIfSystemProperty(named = "testMode", matches = "unitTest")
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension::class)
 internal class UserUpdateServiceTest {
@@ -47,9 +47,6 @@ internal class UserUpdateServiceTest {
             )
         given(userRepository.existsByUserInfoEmail("taesu@crscube.co.kr")).willReturn(false)
         given(userRepository.findByKey(12L)).willReturn(user)
-
-        doReturn(123).`when`(userRepository).findByKey(12L)
-        `when`(userRepository.findByKey(12L)).thenReturn(user)
 
         // when
         userUpdateService.update(
