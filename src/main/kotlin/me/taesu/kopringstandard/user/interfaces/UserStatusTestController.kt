@@ -19,6 +19,11 @@ class UserStatusTestController {
     fun post(@RequestBody userStatusRequest: UserStatusRequest): UserStatusResponse {
         return UserStatusResponse(userStatusRequest.status)
     }
+
+    @GetMapping("/api/v1/users/status")
+    fun get(status: UserStatus): UserStatusResponse {
+        return UserStatusResponse(status)
+    }
 }
 
 class UserStatusRequest(

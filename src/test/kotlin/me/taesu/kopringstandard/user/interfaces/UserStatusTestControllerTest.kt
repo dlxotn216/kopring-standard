@@ -52,4 +52,24 @@ class UserStatusTestControllerTest {
             print()
         }
     }
+
+    @Test
+    fun `Request Parameter로 전달된 UserStatus가 적절히 변환된다`() {
+        // given
+        // when
+        val perform = this.mockMvc.get("/api/v1/users/status") {
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            header("Accept-Language", "ko")
+            param("status", "A")
+        }
+
+        // then
+        perform.andExpect {
+            status { isOk() }
+            jsonPath("$.status") { value("A") }
+        }.andDo {
+            print()
+        }
+    }
 }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.Deserializers
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.type.ClassKey
+import me.taesu.kopringstandard.app.converters.RawCodeConverter.Companion.fromRawCode
 import me.taesu.kopringstandard.app.domain.RawCode
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
@@ -67,21 +68,10 @@ class RawCodeDeserializerModule: Module() {
 
 class RawCodeDeserializer(valueClass: Class<*>? = null): StdDeserializer<Enum<*>>(valueClass), ContextualDeserializer {
     override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Enum<*> {
+        val enumType = _valueClass as Class<out Enum<*>>
         val jsonNode = jp.codec.readTree<JsonNode>(jp)
         val text = jsonNode.asText()
-        val enumType = _valueClass as Class<out Enum<*>>
-        val enum = enumType.enumConstants
-            .filterIsInstance(RawCode::class.java)
-            .firstOrNull { it.code == text }
-            as? Enum<*>
-            ?: throw IllegalArgumentException(
-                String.format(
-                    "[%s][%s]값에 해당하는 Enum 찾지 못했습니다.",
-                    enumType.name,
-                    text
-                )
-            )
-        return java.lang.Enum.valueOf(enumType, enum.name)
+        return fromRawCode(enumType, text)
     }
 
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty): JsonDeserializer<*> {
