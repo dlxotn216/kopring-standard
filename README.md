@@ -551,4 +551,7 @@ Jackson2ObjectMapperBuilder는 WebMvcConfigurer 설정에서 실행되어 모듈
 <li>
 <a href="https://medium.com/@taesulee93/https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-custom-converter%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-81ddbc94c759">Spring WebMVC에서 Custom Converter를 활용하여 Enum 똑똑하게 사용하기</a>
 </li>
+<li>
+<a href="https://medium.com/@taesulee93/kotlin%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-spring-jdbctemplate-%EC%BF%BC%EB%A6%AC-%EA%B2%B0%EA%B3%BC-%EC%86%90%EC%89%BD%EA%B2%8C-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0-9a11fe6f158b">Kotlin을 이용하여 Spring JdbcTemplate 쿼리 결과 손쉽게 가져오기</a>
+</li>
 </ul>

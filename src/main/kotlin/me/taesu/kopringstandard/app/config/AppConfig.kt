@@ -26,7 +26,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
 @Configuration
 class AppConfig: WebMvcConfigurer {
     @Autowired
-    private lateinit var rawConverters: List<RawCodeConverter>
+    private lateinit var rawConverters: List<RawCodeConverter<*>>
 
     override fun addFormatters(registry: FormatterRegistry) {
         super.addFormatters(registry)

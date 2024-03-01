@@ -4,6 +4,7 @@ import me.taesu.kopringstandard.app.domain.RawCode
 import me.taesu.kopringstandard.user.domain.UserStatus
 import org.springframework.core.convert.converter.Converter
 import org.springframework.stereotype.Component
+import javax.persistence.AttributeConverter
 
 /**
  * Created by itaesu on 2024/03/01.
@@ -13,9 +14,19 @@ import org.springframework.stereotype.Component
  * @since kopring-standard
  */
 
-open class RawCodeConverter(val _valueClass: Class<*>) {
+open class RawCodeConverter<E>(val valueClass: Class<*>):
+    AttributeConverter<E?, String> where E: Enum<E>, E: RawCode? {
     fun convertRaw(rawCode: String): Enum<*> {
-        return fromRawCode(_valueClass as Class<out Enum<*>>, rawCode)
+        return fromRawCode(valueClass as Class<out Enum<*>>, rawCode)
+    }
+
+    override fun convertToEntityAttribute(dbData: String?): E? {
+        dbData?: return null
+        return convertRaw(dbData) as E
+    }
+
+    override fun convertToDatabaseColumn(attribute: E?): String? {
+        return attribute?.code
     }
 
     companion object {
@@ -37,8 +48,8 @@ open class RawCodeConverter(val _valueClass: Class<*>) {
 }
 
 @Component
-class UserStatusConverter: Converter<String, UserStatus>, RawCodeConverter(UserStatus::class.java) {
-    override fun convert(source: String): UserStatus {
-        return super.convertRaw(source) as UserStatus
+class UserStatusConverter: Converter<String, UserStatus>, RawCodeConverter<UserStatus>(UserStatus::class.java) {
+    override fun convert(source: String): UserStatus? {
+        return super.convertToEntityAttribute(source)
     }
 }

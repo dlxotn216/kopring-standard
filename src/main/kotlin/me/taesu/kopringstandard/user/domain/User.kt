@@ -1,5 +1,6 @@
 package me.taesu.kopringstandard.user.domain
 
+import me.taesu.kopringstandard.app.converters.UserStatusConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.NoRepositoryBean
 import java.io.Serializable
@@ -13,12 +14,12 @@ import javax.persistence.*
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
-@Table(name = "USR_USER")
+@Table(name = "usr_user")
 @Entity(name = "User")
 class User(
     @Id
     @GeneratedValue
-    @Column(name = "USER_KEY")
+    @Column(name = "user_key")
     val key: Long,
 
     @Embedded
@@ -55,19 +56,27 @@ class User(
 
 @Embeddable
 class UserInfo(
-    @Column(name = "EMAIL", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     var email: String,
 
-    @Column(name = "USER_NAME")
+    @Column(name = "user_name", nullable = false)
     var name: String,
 
-    @Column(name = "BIRTH_DATE")
+    @Column(name = "birth_date", nullable = false)
     var birthDate: LocalDate,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     var type: UserType,
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "weight")
+    var weight: Int? = null,
+
+    @Column(name = "nick_name")
+    var nickname: String? = null,
+
+    @Convert(converter = UserStatusConverter::class)
+    @Column(name = "status", nullable = false)
     var status: UserStatus,
 ): Serializable {
     fun update(email: String, name: String, birthDate: LocalDate) {
