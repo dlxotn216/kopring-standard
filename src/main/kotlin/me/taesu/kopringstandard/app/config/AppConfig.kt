@@ -1,5 +1,7 @@
 package me.taesu.kopringstandard.app.config
 
+import me.taesu.kopringstandard.app.config.jackson.CodeEnumModule
+import me.taesu.kopringstandard.app.config.jackson.RawCodeDeserializerModule
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -38,6 +40,9 @@ class AppConfig: WebMvcConfigurer {
 
     @Bean
     fun codeEnumModule() = CodeEnumModule()
+
+    @Bean
+    fun rawCodeDeserializerModule() =  RawCodeDeserializerModule()
 }
 
 

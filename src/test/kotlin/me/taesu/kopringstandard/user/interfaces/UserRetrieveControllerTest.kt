@@ -1,6 +1,7 @@
 package me.taesu.kopringstandard.user.interfaces
 
 import me.taesu.kopringstandard.app.domain.CodeEnum
+import me.taesu.kopringstandard.user.domain.UserStatus
 import me.taesu.kopringstandard.user.domain.UserType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -74,7 +75,7 @@ internal class UserRetrieveControllerTest {
     @BeforeEach
     fun setUp(
         webApplicationContext: WebApplicationContext,
-        restDocumentation: RestDocumentationContextProvider
+        restDocumentation: RestDocumentationContextProvider,
     ) {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply<DefaultMockMvcBuilder>(documentationConfiguration(restDocumentation))
@@ -90,7 +91,8 @@ internal class UserRetrieveControllerTest {
                 email = "taesu@crscube.co.kr",
                 name = "Lee",
                 birthDate = LocalDate.of(1993, 2, 16),
-                type = UserType.DIAMOND
+                type = UserType.DIAMOND,
+                status = UserStatus.ACTIVE,
             )
         )
 
@@ -110,6 +112,7 @@ internal class UserRetrieveControllerTest {
             .andExpect(jsonPath("$.name").value("Lee"))
             .andExpect(jsonPath("$.birthDate").value("1993-02-16"))
             .andExpect(jsonPath("$.type.value").value("DIAMOND"))
+            .andExpect(jsonPath("$.status").value("A"))
             .andDo(MockMvcResultHandlers.print())
             .andDo(
                 prettyDocument(
@@ -125,6 +128,7 @@ internal class UserRetrieveControllerTest {
                         "birthDate" date "" mean "생년월일",
                         "type.value" enum UserType::class mean "사용자 타입의 코드 값",
                         "type.label" type STRING mean "사용자 타입의 다국어 라벨",
+                        "status" enum UserStatus::class mean "사용자 상태의 코드 값",
                     ),
                 )
             )
@@ -175,7 +179,8 @@ internal class UserRetrieveControllerTest {
                 email = "taesu@crscube.co.kr",
                 name = "Lee",
                 birthDate = LocalDate.of(1993, 2, 16),
-                type = UserType.DIAMOND
+                type = UserType.DIAMOND,
+                status = UserStatus.ACTIVE,
             )
         )
 
@@ -210,7 +215,8 @@ internal class UserRetrieveControllerTest {
                     email = "taesu@crscube.co.kr",
                     name = "Lee",
                     birthDate = LocalDate.of(1993, 2, 16),
-                    type = UserType.DIAMOND
+                    type = UserType.DIAMOND,
+                    status = UserStatus.ACTIVE,
                 )
             )
         } catch (e: Exception) {
@@ -235,7 +241,8 @@ internal class UserRetrieveControllerTest {
                     email = "taesu@crscube.co.kr",
                     name = "Lee",
                     birthDate = LocalDate.of(1993, 2, 16),
-                    type = UserType.DIAMOND
+                    type = UserType.DIAMOND,
+                    status = UserStatus.ACTIVE,
                 )
             )
         } catch (e: Exception) {
@@ -256,7 +263,7 @@ fun FieldDescriptor.optionalField(): FieldDescriptor {
 
 fun prettyDocument(
     id: String,
-    vararg snippets: Snippet
+    vararg snippets: Snippet,
 ): RestDocumentationResultHandler {
     return document(
         id,

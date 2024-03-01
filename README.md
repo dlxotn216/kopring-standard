@@ -542,3 +542,10 @@ class JacksonConfig {
 Jackson2ObjectMapperBuilder는 WebMvcConfigurer 설정에서 실행되어 모듈들을 찾아 등록하기 때문에  
 위와같이 별도의 일반 Configuration 클래스에 Bean을 등록하면 모듈이 알아서 등록되지 않음.  
   
+
+## 연관된 글
+<ul>
+<li>
+<a href="https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-jackson-custom-serdes-serializer-deserializer-%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-with-jackson-9ee9af9f563c">Spring WebMVC에서 Jackson Custom SerDes¹을 활용하여 Enum 똑똑하게 사용하기 (with Jackson module)</a>
+</li>
+</ul>

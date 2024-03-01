@@ -28,6 +28,7 @@ class User(
     val name: String get() = userInfo.name
     val birthDate: LocalDate get() = userInfo.birthDate
     val type: UserType get() = userInfo.type
+    val status: UserStatus get() = userInfo.status
 
     constructor(
         key: Long = 0,
@@ -42,7 +43,8 @@ class User(
                 email = email,
                 name = name,
                 birthDate = birthDate,
-                type = type
+                type = type,
+                status = UserStatus.ACTIVE
             )
         )
 
@@ -64,6 +66,9 @@ class UserInfo(
 
     @Enumerated(EnumType.STRING)
     var type: UserType,
+
+    @Enumerated(EnumType.STRING)
+    var status: UserStatus,
 ): Serializable {
     fun update(email: String, name: String, birthDate: LocalDate) {
         this.email = email

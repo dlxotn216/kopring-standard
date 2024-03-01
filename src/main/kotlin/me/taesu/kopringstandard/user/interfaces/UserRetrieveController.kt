@@ -1,5 +1,6 @@
 package me.taesu.kopringstandard.user.interfaces
 
+import me.taesu.kopringstandard.user.domain.UserStatus
 import me.taesu.kopringstandard.user.domain.UserType
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -44,7 +45,8 @@ class UserRetrieveService {
             email = "taesu@crscube.co.kr",
             name = "Lee",
             birthDate = LocalDate.of(1993, 2, 16),
-            type = UserType.DIAMOND
+            type = UserType.DIAMOND,
+            status = UserStatus.ACTIVE,
         )
     }
 
@@ -56,7 +58,8 @@ class UserRetrieveService {
             email = "taesu@crscube.co.kr",
             name = "Lee",
             birthDate = LocalDate.of(1993, 2, 16),
-            type = UserType.DIAMOND
+            type = UserType.DIAMOND,
+            status = UserStatus.ACTIVE,
         )
     }
 }
@@ -66,5 +69,6 @@ class UserRetrieveResponse(
     val email: String?,
     val name: String,
     val birthDate: LocalDate,
-    val type: UserType
+    val type: UserType,
+    val status: UserStatus,
 )

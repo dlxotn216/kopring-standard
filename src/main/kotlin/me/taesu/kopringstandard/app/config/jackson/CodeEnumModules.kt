@@ -1,4 +1,4 @@
-package me.taesu.kopringstandard.app.config
+package me.taesu.kopringstandard.app.config.jackson
 
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.BeanDescription
