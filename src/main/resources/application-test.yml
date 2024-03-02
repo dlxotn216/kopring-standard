@@ -5,7 +5,6 @@ spring:
       username: sa
       password:
       maximum-pool-size: 10
-    initialization-mode: always
   jpa:
     hibernate:
       ddl-auto: create-drop
