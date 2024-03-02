@@ -20,7 +20,7 @@ class User(
     @Id
     @GeneratedValue
     @Column(name = "user_key")
-    val key: Long,
+    val key: Long = 0L,
 
     @Embedded
     private val userInfo: UserInfo
