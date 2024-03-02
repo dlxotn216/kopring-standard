@@ -1,6 +1,6 @@
 package me.taesu.kopringstandard.user.domain
 
-import me.taesu.kopringstandard.app.domain.CodeEnum
+import me.taesu.kopringstandard.app.domain.I18nCode
 import me.taesu.kopringstandard.app.domain.RawCode
 
 /**
@@ -14,7 +14,7 @@ enum class UserType(
     override val codeId: String = "USER_TYPE",
     override val description: String,
     override val code: String,
-): CodeEnum, RawCode {
+): I18nCode, RawCode {
     BRONZE(description = "브론즈", code = "BRONZE"),
     SILVER(description = "실버", code = "SILVER"),
     GOLD(description = "골드", code = "GOLD"),

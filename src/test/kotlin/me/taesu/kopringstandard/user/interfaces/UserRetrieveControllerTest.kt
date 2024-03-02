@@ -1,6 +1,6 @@
 package me.taesu.kopringstandard.user.interfaces
 
-import me.taesu.kopringstandard.app.domain.CodeEnum
+import me.taesu.kopringstandard.app.domain.I18nCode
 import me.taesu.kopringstandard.user.domain.UserStatus
 import me.taesu.kopringstandard.user.domain.UserType
 import org.assertj.core.api.Assertions.assertThat
@@ -282,8 +282,8 @@ infix fun String.type(fieldType: FieldType) = Field(this).apply {
 
 infix fun <T: Enum<T>> String.enum(clazz: KClass<T>) = Field(this).apply {
     type(STRING.type)
-    val enums = if (CodeEnum::class.java.isAssignableFrom(clazz.java)) {
-        clazz.java.enumConstants.map { it as CodeEnum }.map { "${it.name} : ${it.description}" }
+    val enums = if (I18nCode::class.java.isAssignableFrom(clazz.java)) {
+        clazz.java.enumConstants.map { it as I18nCode }.map { "${it.name} : ${it.description}" }
     } else {
         clazz.java.enumConstants.map { it.name }
     }

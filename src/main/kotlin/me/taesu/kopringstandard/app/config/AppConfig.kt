@@ -1,8 +1,9 @@
 package me.taesu.kopringstandard.app.config
 
-import me.taesu.kopringstandard.app.config.jackson.CodeEnumModule
+import me.taesu.kopringstandard.app.config.jackson.I18nCodeModule
 import me.taesu.kopringstandard.app.config.jackson.RawCodeDeserializerModule
 import me.taesu.kopringstandard.app.converters.RawCodeConverter
+import me.taesu.kopringstandard.app.i18n.SupportLang
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
@@ -41,18 +42,23 @@ class AppConfig: WebMvcConfigurer {
     }
 
     @Bean
-    fun localResolver(): LocaleResolver = AcceptHeaderLocaleResolver()
+    fun localeResolver(): LocaleResolver = AcceptHeaderLocaleResolver().apply {
+        supportedLocales = SupportLang.values().map { it.locale }
+        defaultLocale = SupportLang.DEFAULT_LOCALE
+    }
 
     @Bean
     fun messageSource(): MessageSource {
         return ReloadableResourceBundleMessageSource().apply {
+            this.setUseCodeAsDefaultMessage(true)
+            this.setAlwaysUseMessageFormat(true)
             this.setBasename("classpath:messages/message")
             this.setDefaultEncoding("UTF-8")
         }
     }
 
     @Bean
-    fun codeEnumModule() = CodeEnumModule()
+    fun codeEnumModule() = I18nCodeModule()
 
     @Bean
     fun rawCodeDeserializerModule() = RawCodeDeserializerModule()

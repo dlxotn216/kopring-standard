@@ -9,4 +9,8 @@ package me.taesu.kopringstandard.app.exception
  */
 enum class ErrorCode(val clazz: Class<out InvalidRequestException>) {
     USER_ID_DUPLICATED(UserEmailDuplicatedException::class.java)
+    ;
+
+    val messageId = this.name
+
 }

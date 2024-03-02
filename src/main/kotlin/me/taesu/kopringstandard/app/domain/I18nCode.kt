@@ -1,7 +1,7 @@
 package me.taesu.kopringstandard.app.domain
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import me.taesu.kopringstandard.app.interfaces.CodeEnumSerializer
+import me.taesu.kopringstandard.app.config.jackson.I18nCodeSerializer
 
 /**
  * Created by itaesu on 2022/05/24.
@@ -11,10 +11,10 @@ import me.taesu.kopringstandard.app.interfaces.CodeEnumSerializer
  * @since ConsentV3 v1.0 wB202203
  */
 @JsonSerialize(
-    using = CodeEnumSerializer::class,
-    nullsUsing = CodeEnumSerializer::class
+    using = I18nCodeSerializer::class,
+    nullsUsing = I18nCodeSerializer::class
 )
-interface CodeEnum {
+interface I18nCode {
     val codeId: String
     val name: String
     val messageId: String get() = "CODE.$codeId.$name"
