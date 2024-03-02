@@ -1,7 +1,7 @@
 package me.taesu.kopringstandard.app.interfaces
 
-import me.taesu.kopringstandard.app.jdbc.PageableCriteria
-import me.taesu.kopringstandard.app.jdbc.PaginatedRow
+import me.taesu.kopringstandard.app.query.PageableCriteria
+import me.taesu.kopringstandard.app.query.PaginatedRow
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 

@@ -1,8 +1,8 @@
 package me.taesu.kopringstandard.app.interfaces
 
 import me.taesu.kopringstandard.app.exception.ErrorCode
-import me.taesu.kopringstandard.app.jdbc.PageableCriteria
-import me.taesu.kopringstandard.app.jdbc.PaginatedRow
+import me.taesu.kopringstandard.app.query.PageableCriteria
+import me.taesu.kopringstandard.app.query.PaginatedRow
 
 /**
  * Created by itaesu on 2024/03/01.
