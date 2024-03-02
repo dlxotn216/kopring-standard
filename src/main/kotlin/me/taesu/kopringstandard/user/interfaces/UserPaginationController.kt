@@ -1,10 +1,13 @@
 package me.taesu.kopringstandard.user.interfaces
 
-import me.taesu.kopringstandard.app.interfaces.PageableCriteria
+import me.taesu.kopringstandard.app.interfaces.PaginatedResult
+import me.taesu.kopringstandard.app.interfaces.SuccessResponse
+import me.taesu.kopringstandard.app.interfaces.SuccessResponseFactory
 import me.taesu.kopringstandard.user.application.UserPaginationService
 import me.taesu.kopringstandard.user.domain.UserType
-import org.springframework.data.domain.Page
+import me.taesu.kopringstandard.user.infra.UserPaginateSqlCriteria
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 
@@ -19,22 +22,13 @@ import java.time.LocalDate
 class UserPaginationController(private val service: UserPaginationService) {
     @GetMapping("/api/v1/users")
     fun pagination(
-        criteria: UserCriteria
-    ): Page<UserPaginatedRow> {
-        return service.pagination(criteria)
+        @RequestParam parameters: Map<String, String>,
+        criteria: UserPaginateSqlCriteria,
+    ): SuccessResponse<PaginatedResult> {
+        return SuccessResponseFactory.of(
+            pageResult = service.paginate(criteria),
+            parameters = parameters,
+            criteria = criteria,
+        )
     }
 }
-
-class UserCriteria(
-    page: Int = 1,
-    size: Int = 10
-): PageableCriteria(page, size, false)
-
-class UserPaginatedRow(
-    val userKey: Long,
-    val email: String,
-    val name: String,
-    val birthDate: LocalDate,
-    val userType: UserType?
-)
-
