@@ -1,4 +1,24 @@
-# Kotlin based Spring MVC project standard
+# 연관된 글
+<ul>
+<li>
+<a href="https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-jackson-custom-serdes-serializer-deserializer-%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-with-jackson-9ee9af9f563c">Kotlin, Spring WebMVC에서 Jackson Custom SerDes¹을 활용하여 Enum 똑똑하게 사용하기 (with Jackson module)</a>
+</li>
+<li>
+<a href="https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-custom-converter%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-81ddbc94c759">Kotlin, Spring WebMVC에서 Custom Converter를 활용하여 Enum 똑똑하게 사용하기</a>
+</li>
+<li>
+<a href="https://medium.com/@taesulee93/kotlin%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-spring-jdbctemplate-%EC%BF%BC%EB%A6%AC-%EA%B2%B0%EA%B3%BC-%EC%86%90%EC%89%BD%EA%B2%8C-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0-9a11fe6f158b">Kotlin을 이용하여 Spring JdbcTemplate 쿼리 결과 ResultSet 손쉽고 안전하고 매핑하기</a>
+</li>
+<li>
+<a href="https://medium.com/@taesulee93/spring-jdbctemplate%EC%97%90%EC%84%9C-custombeanpropertysqlparametersource%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EB%8B%A4%EC%96%91%ED%95%9C-%ED%83%80%EC%9E%85%EC%9D%98-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EB%B0%94%EC%9D%B8%EB%94%A9%ED%95%98%EA%B8%B0-0cce4b3d4752">Kotlin, Spring JdbcTemplate에서 CustomBeanPropertySqlParameterSource를 활용하여 다양한 타입의 파라미터 안전하게 바인딩하기</a>
+</li>
+<li>
+<a href="https://medium.com/@taesulee93/kotlin%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-spring-jdbctemplate%EC%97%90%EC%84%9C-sql-where-clause-%EC%86%90%EC%89%BD%EA%B3%A0-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0-6c873512f0a4">Kotlin을 이용하여 Spring JdbcTemplate에서 SQL Where clause 손쉽고 안전하게 생성하기</a>
+</li>
+</ul>
+
+
+### Kotlin based Spring MVC project standard에 대한 과거(2022년) 생각
 
 Kotlin을 코드베이스로 하여 Spring 기반의 API 서비스를 개발 하면서 언어를 제대로 사용하고 있지 못하고 있다는 생각이 많이 들었다.   
 Spring에서 Kotlin 지원을 위한 다양한 DSL을 전혀 이용하지 못했고 Repository에서 null을 반환하는지 체크하여 예외를 던지는 코드를  
@@ -541,17 +561,3 @@ class JacksonConfig {
 
 Jackson2ObjectMapperBuilder는 WebMvcConfigurer 설정에서 실행되어 모듈들을 찾아 등록하기 때문에  
 위와같이 별도의 일반 Configuration 클래스에 Bean을 등록하면 모듈이 알아서 등록되지 않음.  
-  
-
-## 연관된 글
-<ul>
-<li>
-<a href="https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-jackson-custom-serdes-serializer-deserializer-%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-with-jackson-9ee9af9f563c">Spring WebMVC에서 Jackson Custom SerDes¹을 활용하여 Enum 똑똑하게 사용하기 (with Jackson module)</a>
-</li>
-<li>
-<a href="https://medium.com/@taesulee93/https://medium.com/@taesulee93/spring-webmvc%EC%97%90%EC%84%9C-custom-converter%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-enum-%EB%98%91%EB%98%91%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-81ddbc94c759">Spring WebMVC에서 Custom Converter를 활용하여 Enum 똑똑하게 사용하기</a>
-</li>
-<li>
-<a href="https://medium.com/@taesulee93/kotlin%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-spring-jdbctemplate-%EC%BF%BC%EB%A6%AC-%EA%B2%B0%EA%B3%BC-%EC%86%90%EC%89%BD%EA%B2%8C-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0-9a11fe6f158b">Kotlin을 이용하여 Spring JdbcTemplate 쿼리 결과 손쉽게 가져오기</a>
-</li>
-</ul>
