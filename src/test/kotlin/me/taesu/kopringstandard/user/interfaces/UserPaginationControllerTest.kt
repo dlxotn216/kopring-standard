@@ -96,7 +96,8 @@ internal class UserPaginationControllerTest {
             jsonPath("$.result.contents[0].nickname") { value(null) }
             jsonPath("$.result.contents[0].type.value") { value("DIAMOND") }
             jsonPath("$.result.contents[0].type.label") { value("다이아몬드") }
-            jsonPath("$.result.contents[0].status") { value("A") }
+            jsonPath("$.result.contents[0].status.value") { value("A") }
+            jsonPath("$.result.contents[0].status.label") { value("활성화") }
         }.andDo {
             print()
         }

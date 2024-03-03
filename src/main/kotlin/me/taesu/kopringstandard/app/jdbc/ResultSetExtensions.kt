@@ -44,6 +44,19 @@ infix fun ResultSet.localDate(columnName: String): LocalDate {
     return this.getDate(columnName).toLocalDate()
 }
 
+infix fun ResultSet.enum(enumType: Class<out Enum<*>>): ResultSetEnum {
+    return ResultSetEnum(enumType, this)
+}
+
+class ResultSetEnum(
+    val enumType: Class<out Enum<*>>,
+    val rs: ResultSet,
+) {
+    infix fun from(columnName: String): Enum<*> {
+        return RawCodeConverter.fromEnum(enumType, rs.getString(columnName))
+    }
+}
+
 infix fun ResultSet.rawCode(enumType: Class<out Enum<*>>): ResultSetRawCode {
     return ResultSetRawCode(enumType, this)
 }

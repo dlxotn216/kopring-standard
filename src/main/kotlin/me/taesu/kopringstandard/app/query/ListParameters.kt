@@ -30,4 +30,4 @@ open class RawCodeListParameters<T: RawCode>(
 class UserTypeListParameters(
     value: List<UserType> = emptyList(),
     withNull: Boolean = false,
-): Filterable, RawCodeListParameters<UserType>(value, withNull)
+): Filterable, ListParameters<UserType>(value, withNull)

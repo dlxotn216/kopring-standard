@@ -2,6 +2,7 @@ package me.taesu.kopringstandard.user.infra.impl
 
 import me.taesu.kopringstandard.app.query.LikeParameters
 import me.taesu.kopringstandard.app.query.LongListParameters
+import me.taesu.kopringstandard.setTimezone
 import me.taesu.kopringstandard.user.domain.User
 import me.taesu.kopringstandard.user.domain.UserRepository
 import me.taesu.kopringstandard.user.domain.UserStatus
@@ -34,6 +35,10 @@ class UserQueryImplTest {
     private lateinit var userQuery: UserQuery
 
     var user: User? = null
+
+    init {
+        setTimezone()
+    }
 
     @BeforeEach
     fun init() {
@@ -118,7 +123,7 @@ class UserQueryImplTest {
             assertThat(this.status).isEqualTo(UserStatus.ACTIVE)
         }
     }
-    
+
     @Test
     fun `_를 포함하는 Like sql 조회 테스트`() {
         // given

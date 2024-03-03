@@ -1,7 +1,7 @@
 package me.taesu.kopringstandard.user.infra.impl
 
-import me.taesu.kopringstandard.app.query.queryIf
 import me.taesu.kopringstandard.app.jdbc.*
+import me.taesu.kopringstandard.app.query.queryIf
 import me.taesu.kopringstandard.user.domain.UserStatus
 import me.taesu.kopringstandard.user.domain.UserType
 import me.taesu.kopringstandard.user.infra.*
@@ -35,7 +35,7 @@ class UserQueryImpl(private val jdbcTemplate: NamedParameterJdbcTemplate): UserQ
                 rs localDate "birth_date",
                 rs intOrNull "weight",
                 rs stringOrNull "nick_name",
-                (rs rawCode UserType::class.java from "type") as UserType,
+                (rs enum UserType::class.java from "type") as UserType,
                 (rs rawCode UserStatus::class.java from "status") as UserStatus,
             )
         }
@@ -71,7 +71,7 @@ class UserQueryImpl(private val jdbcTemplate: NamedParameterJdbcTemplate): UserQ
                     rs localDate "birth_date",
                     rs intOrNull "weight",
                     rs stringOrNull "nick_name",
-                    (rs rawCode UserType::class.java from "type") as UserType,
+                    (rs enum UserType::class.java from "type") as UserType,
                     (rs rawCode UserStatus::class.java from "status") as UserStatus,
                 )
             }

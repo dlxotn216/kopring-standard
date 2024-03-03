@@ -13,12 +13,11 @@ import me.taesu.kopringstandard.app.domain.RawCode
 enum class UserType(
     override val codeId: String = "USER_TYPE",
     override val description: String,
-    override val code: String,
-): I18nCode, RawCode {
-    BRONZE(description = "브론즈", code = "BRONZE"),
-    SILVER(description = "실버", code = "SILVER"),
-    GOLD(description = "골드", code = "GOLD"),
-    PLATINUM(description = "플래티넘", code = "PLATINUM"),
-    DIAMOND(description = "다이아몬드", code = "DIAMOND"),
+): I18nCode {
+    BRONZE(description = "브론즈"),
+    SILVER(description = "실버"),
+    GOLD(description = "골드"),
+    PLATINUM(description = "플래티넘"),
+    DIAMOND(description = "다이아몬드"),
     ;
 }
