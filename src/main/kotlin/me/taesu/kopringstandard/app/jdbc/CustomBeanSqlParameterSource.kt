@@ -1,8 +1,8 @@
 package me.taesu.kopringstandard.app.jdbc
 
+import me.taesu.kopringstandard.app.domain.RawCode
 import me.taesu.kopringstandard.app.query.LikeParameters
 import me.taesu.kopringstandard.app.query.ListParameters
-import me.taesu.kopringstandard.app.domain.RawCode
 import org.springframework.beans.PropertyAccessorFactory
 import org.springframework.jdbc.core.StatementCreatorUtils
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
@@ -142,6 +142,12 @@ class CustomBeanPropertySqlParameterSource(parameter: Any): BeanPropertySqlParam
             isInstanceOfRawCodeCollection(value) ->
                 (value as Collection<*>).filterIsInstance(RawCode::class.java).map { it.code }
 
+            value is Enum<*> -> value.name
+
+            isInstanceOfEnumCollection(value) ->
+                (value as Collection<*>).filterIsInstance(Enum::class.java).map { it.name }.toList()
+
+
             else -> value
         }
     }
@@ -166,6 +172,20 @@ class CustomBeanPropertySqlParameterSource(parameter: Any): BeanPropertySqlParam
                 first is RawCode
             }
 
+            else -> false
+        }
+    }
+
+    private fun isInstanceOfEnum(value: Any?): Boolean {
+        return when (value) {
+            is Enum<*> -> true
+            else -> false
+        }
+    }
+
+    private fun isInstanceOfEnumCollection(value: Any?): Boolean {
+        return when (value) {
+            is Collection<*> -> value.any { isInstanceOfEnum(it) }
             else -> false
         }
     }
