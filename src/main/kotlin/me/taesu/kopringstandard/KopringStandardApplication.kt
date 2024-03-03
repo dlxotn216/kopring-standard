@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct
 class KopringStandardApplication {
     @PostConstruct
     fun onConstruct() {
-        TimeZone.setDefault(TimeZone.getTimeZone(DEFAULT_ZONE_ID))
+        setTimezone()
     }
 
     companion object {
@@ -25,7 +25,12 @@ class KopringStandardApplication {
 }
 
 fun main(args: Array<String>) {
+    setTimezone()
     runApplication<KopringStandardApplication>(*args)
+}
+
+fun setTimezone() {
+    TimeZone.setDefault(TimeZone.getTimeZone(KopringStandardApplication.DEFAULT_ZONE_ID))
 }
 
 @Profile("!test")
