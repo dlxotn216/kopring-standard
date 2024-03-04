@@ -30,6 +30,19 @@ open class RawCodeConverter<E>(val valueClass: Class<*>):
     }
 
     companion object {
+        fun fromEnum(enumType: Class<out Enum<*>>, code: String): Enum<*> {
+            val enum = enumType.enumConstants
+                .firstOrNull { it.name == code }
+                ?: throw IllegalArgumentException(
+                    String.format(
+                        "[%s][%s]값에 해당하는 Enum 찾지 못했습니다.",
+                        enumType.name,
+                        code
+                    )
+                )
+            return java.lang.Enum.valueOf(enumType, enum.name)
+        }
+
         fun fromRawCode(enumType: Class<out Enum<*>>, rawCode: String): Enum<*> {
             val enum = enumType.enumConstants
                 .filterIsInstance(RawCode::class.java)
