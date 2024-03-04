@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
 import me.taesu.kopringstandard.app.domain.I18nCode
+import me.taesu.kopringstandard.app.domain.RawCode
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Component
@@ -75,7 +76,12 @@ class I18nCodeNullSerializer: JsonSerializer<Any?>() {
 class I18nCodeSerializer(var messageSource: MessageSource): JsonSerializer<I18nCode?>() {
     override fun serialize(code: I18nCode?, generator: JsonGenerator, provider: SerializerProvider) {
         generator.writeStartObject()
-        generator.writeStringField("value", code?.name ?: "")
+        val value = when(code) {
+            null -> ""
+            is RawCode -> code.code
+            else -> code.name
+        }
+        generator.writeStringField("value", value)
         val label = code?.let {
             messageSource.getMessage(it.messageId, emptyArray<Any>(), LocaleContextHolder.getLocale())
         } ?: ""

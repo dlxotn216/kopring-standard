@@ -3,6 +3,8 @@ package me.taesu.kopringstandard.app.interfaces
 import me.taesu.kopringstandard.app.exception.ErrorCode
 import me.taesu.kopringstandard.app.query.PageableCriteria
 import me.taesu.kopringstandard.app.query.PaginatedRow
+import me.taesu.kopringstandard.app.vo.SimpleText
+import me.taesu.kopringstandard.app.vo.Translatable
 
 /**
  * Created by itaesu on 2024/03/01.
@@ -13,7 +15,7 @@ import me.taesu.kopringstandard.app.query.PaginatedRow
  */
 sealed class Response(
     status: ResponseStatus,
-    val message: Any,   // Transformable 혹은 String 구현체
+    val message: Translatable,
 ) {
     val status: String = status.code
 }
@@ -26,7 +28,7 @@ enum class ResponseStatus(val code: String) {
 
 class SuccessResponse<T: Any?>(
     val result: T,
-    message: Any = "Request was success.",
+    message: Translatable,
 ): Response(
     status = ResponseStatus.SUCCESS,
     message = message,
@@ -48,8 +50,8 @@ class PaginatedResult(
 
 class FailResponse(
     errorCode: ErrorCode,
-    errorMessage: String,
-    debugMessage: String = errorMessage,
+    debugMessage: String,
+    errorMessage: Translatable = SimpleText("Request was failed."),
     additional: Map<String, Any> = emptyMap(),
 ): Response(
     status = ResponseStatus.FAIL,

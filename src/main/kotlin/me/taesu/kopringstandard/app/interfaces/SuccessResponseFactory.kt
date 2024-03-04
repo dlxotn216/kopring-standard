@@ -2,6 +2,8 @@ package me.taesu.kopringstandard.app.interfaces
 
 import me.taesu.kopringstandard.app.query.PageableCriteria
 import me.taesu.kopringstandard.app.query.PaginatedRow
+import me.taesu.kopringstandard.app.vo.SimpleText
+import me.taesu.kopringstandard.app.vo.Translatable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 
@@ -16,7 +18,7 @@ class SuccessResponseFactory private constructor() {
     companion object {
         fun <T: Any?> of(
             result: T,
-            message: Any = "Request was success.",
+            message: Translatable = SimpleText("Request was success."),
         ): SuccessResponse<T> {
             return SuccessResponse(result = result, message = message)
         }
@@ -25,7 +27,7 @@ class SuccessResponseFactory private constructor() {
             pageResult: Page<T>,
             parameters: Map<String, String>,
             criteria: PageableCriteria,
-            message: Any = "Request was success.",
+            message: Translatable = SimpleText("Request was success."),
             additional: Map<String, Any> = emptyMap(),
         ): SuccessResponse<PaginatedResult> {
             val lastRowNumber = if (pageResult.isEmpty) {
