@@ -4,13 +4,17 @@ import me.taesu.kopringstandard.app.config.jackson.I18nCodeModule
 import me.taesu.kopringstandard.app.config.jackson.RawCodeDeserializerModule
 import me.taesu.kopringstandard.app.converters.RawCodeConverter
 import me.taesu.kopringstandard.app.i18n.SupportLang
+import me.taesu.kopringstandard.app.resolvers.HttpRequestContextResolver
+import me.taesu.kopringstandard.app.resolvers.MockHttpRequestContextResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.FormatterRegistry
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.LocaleResolver
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -65,3 +69,21 @@ class AppConfig: WebMvcConfigurer {
 }
 
 
+@Profile("test")
+@Configuration
+class TestContextConfig: WebMvcConfigurer {
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(MockHttpRequestContextResolver())
+    }
+}
+
+@Profile("!test")
+@Configuration
+class RealConfig: WebMvcConfigurer {
+    @Autowired
+    private lateinit var httpRequestContextResolver: HttpRequestContextResolver
+
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(httpRequestContextResolver)
+    }
+}
