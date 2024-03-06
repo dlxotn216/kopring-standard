@@ -7,10 +7,26 @@ package me.taesu.kopringstandard.app.exception
  * @version ConsentV3 v1.0 wB202203
  * @since ConsentV3 v1.0 wB202203
  */
-enum class ErrorCode(val clazz: Class<out InvalidRequestException>) {
-    USER_ID_DUPLICATED(UserEmailDuplicatedException::class.java)
+enum class ErrorCode(
+    val exceptionLevel: ExceptionLevel,
+) {
+    INVALID_REQUEST(ExceptionLevel.WARN),
+    INVALID_PARAMETER(ExceptionLevel.WARN),
+    REQUIRED_PARAMETER(ExceptionLevel.WARN),
+    USER_ID_DUPLICATED(ExceptionLevel.NORMAL),
+    UNEXPECTED_DATA_ALREADY_EXISTS(ExceptionLevel.FATAL),
+    MAXIMUM_FILE_SIZE_EXCEEDED(ExceptionLevel.NORMAL),
+    INVALID_USER_TYPE(ExceptionLevel.NORMAL),
+    UNEXPECTED(ExceptionLevel.FATAL),
     ;
 
-    val messageId = this.name
+    val messageId: String = "EXCEPTION.${name}"
 
+}
+
+enum class ExceptionLevel {
+    WARN,
+    NORMAL,
+    FATAL,
+    ;
 }

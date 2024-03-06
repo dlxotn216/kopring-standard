@@ -33,3 +33,11 @@ fun validate(value: Boolean, lazyError: () -> InvalidRequestException) {
         throw lazyError()
     }
 }
+
+₩class UnexpectedStatusException(
+    message: String,
+    cause: Throwable? = null,
+    val statusCode: HttpStatus = HttpStatus.BAD_REQUEST
+): RuntimeException(message, cause) {
+    val errorCode: ErrorCode = ErrorCode.UNEXPECTED
+}
