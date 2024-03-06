@@ -7,6 +7,8 @@ import me.taesu.kopringstandard.app.vo.SimpleText
 import me.taesu.kopringstandard.app.vo.Translatable
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Created by itaesu on 2024/03/02.
@@ -36,6 +38,7 @@ class MessageService(private val messageSource: MessageSource) {
         val newArgs = args?.map { arg ->
             when (arg) {
                 is Translatable -> arg.messageId?.let { getMessage(it, supportLang, arg.messageArgs) }
+                is LocalDate -> arg.format(DateTimeFormatter.ISO_DATE)
                 is Number -> arg.toString()
                 else -> arg
             }

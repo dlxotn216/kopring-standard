@@ -13,6 +13,7 @@ enum class SupportLang(val locale: Locale, val code: String) {
     EN(Locale.forLanguageTag("en"), "en"),
     JA(Locale.forLanguageTag("ja"), "ja"),
     ZH(Locale.forLanguageTag("zh"), "zh"),
+    KO(Locale.forLanguageTag("ko"), "ko"),
     ;
 
     companion object {
