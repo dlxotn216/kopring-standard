@@ -34,7 +34,7 @@ fun validate(value: Boolean, lazyError: () -> InvalidRequestException) {
     }
 }
 
-₩class UnexpectedStatusException(
+class UnexpectedStatusException(
     message: String,
     cause: Throwable? = null,
     val statusCode: HttpStatus = HttpStatus.BAD_REQUEST
